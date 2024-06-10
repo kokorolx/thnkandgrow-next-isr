@@ -20,14 +20,14 @@ export default function Header() {
             <Link
               href="/"
               className={classNames(
-                'horizontal-underline hidden text-3xl font-extrabold sm:block',
+                'horizontal-underline hidden text-3xl font-extrabold sm:block text-white',
                 {
                   'horizontal-underline-active': pathName === '/',
                 }
               )}
-              aria-label="d."
+              aria-label="t."
             >
-              d.
+              t.
             </Link>
           </div>
           <div className="flex items-center space-x-3 text-base leading-5">
