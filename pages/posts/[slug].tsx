@@ -75,7 +75,7 @@ export const getStaticProps: GetStaticProps = async ({
       post: data.post,
       posts: data.posts,
     },
-    revalidate: 10,
+    revalidate: 600,
   };
 };
 
