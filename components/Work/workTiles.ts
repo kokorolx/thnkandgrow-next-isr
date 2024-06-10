@@ -1,5 +1,6 @@
 export type WorkTile = {
   title: string;
+  intro: string;
   description: string;
   image: {
     src: string;
@@ -14,7 +15,8 @@ export type WorkTile = {
 
 export const workTiles: WorkTile[] = [
   {
-    title: `AWS Knowledge: Architecting`,
+    title: `AWS Knowledge: Solutions Architect`,
+    intro: `I've earned`,
     description: `Earners of this badge have developed technical skills and knowledge of AWS concepts and services with a focus on designing solutions on AWS using best practices.`,
     image: {
       src: '/static/images/skill-solution-architect.webp',
@@ -28,6 +30,7 @@ export const workTiles: WorkTile[] = [
   },
   {
     title: `AWS Knowledge: Amazon EKS`,
+    intro: `I've earned`,
     description: `Earners of this badge have developed knowledge of running microservices and container workloads with Amazon Elastic Kubernetes Service (Amazon EKS).`,
     image: {
       src: '/static/images/skill-aws-eks.webp',
@@ -41,6 +44,7 @@ export const workTiles: WorkTile[] = [
   },
   {
     title: `AWS Knowledge: Cloud Essentials`,
+    intro: `I've earned`,
     description: `Earners of this badge have developed knowledge of foundational AWS Cloud concepts with a focus on AWS Compute, Storage, Networking and Database services, security, architecture, pricing, and support.`,
     image: {
       src: '/static/images/skill-cloud-essentials.webp',
