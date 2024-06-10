@@ -20,7 +20,7 @@ export default function Header() {
             <Link
               href="/"
               className={classNames(
-                'horizontal-underline hidden text-3xl font-extrabold sm:block text-white',
+                'horizontal-underline hidden text-3xl font-extrabold sm:block',
                 {
                   'horizontal-underline-active': pathName === '/',
                 }

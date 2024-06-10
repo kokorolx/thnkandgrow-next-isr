@@ -24,7 +24,7 @@ export default function Hero(): ReactElement {
 
   return (
     <div>
-      <div className="relative z-10 flex h-[calc(100vh-81px)] items-center md:h-[calc(100vh-116px)] text-white">
+      <div className="relative z-10 flex h-[calc(100vh-81px)] items-center md:h-[calc(100vh-116px)]">
         <div className="mx-auto w-screen max-w-3xl px-4 sm:px-9 xl:max-w-5xl xl:px-0">
           <div className="-mt-36">
             <div ref={ref} className="flex cursor-default flex-col space-y-2">
