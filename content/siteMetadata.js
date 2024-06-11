@@ -7,9 +7,9 @@ const siteMetadata = {
   theme: 'dark', // system, dark or light
   siteUrl: 'https://thnkandgrow.com',
   siteRepo: 'https://github.com/kokorolx',
-  siteLogo: '/static//static/blog/images/logo.png',
-  image: '/static//static/blog/images/kokorolx.webp',
-  socialBanner: '/static//static/blog/images/twitter-card.png',
+  siteLogo: '/static/images/logo.png',
+  image: '/static/images/kokorolx.webp',
+  socialBanner: '/static/images/twitter-card.png',
   email: 'kokoro.lehoang@gmail.com@gmail.com',
   github: 'https://github.com/kokorolx',
   linkedin: 'https://www.linkedin.com/in/lehoangtam95/',
