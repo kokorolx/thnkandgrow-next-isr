@@ -10,7 +10,7 @@ export const metadata = {
 };
 
 export default function Blog() {
-  const activePosts = allBlogs.filter((p) => p.draft === false);
+  const activePosts = allBlogs.filter((p) => p);
   const posts = sortedBlogPost(activePosts);
   const initialDisplayPosts = posts.slice(0, POSTS_PER_PAGE);
   const pagination = {
