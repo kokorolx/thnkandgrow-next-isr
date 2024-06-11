@@ -37,7 +37,8 @@ export default function Hero(): ReactElement {
                     'Th<span style="color:#DE1D8D;">a</span>nkAndGrow',
                   ]}
                   typeSpeed={100}
-                  backSpeed={500000}
+                  backSpeed={50}
+                  backDelay={2000}
                   loop
                 />
               </h1>
