@@ -1,0 +1,104 @@
+---
+title: "A Beginner's Guide to Docker Swarm: Simplifying Container Orchestration"
+date: '2024-06-09'
+categories:
+  - 'architecture'
+  - 'tips'
+tags:
+  - 'deploy'
+  - 'docker'
+  - 'docker-orchestration'
+  - 'docker-swarm'
+  - 'snowflake'
+coverImage: 'docker-to-swarm-1.png'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+In today's fast-paced tech landscape, efficient container orchestration is crucial for managing complex applications. Docker Swarm, a native clustering and orchestration tool for Docker containers, offers a simple yet powerful solution for deploying and managing multi-container applications. In this blog post, we will explore the basics of Docker Swarm, its key features, and provide a step-by-step guide to get you started.
+
+### What is Docker Swarm?
+
+![](/static/blog/images/Docker-Swarm-Orchestration-2.png)
+
+Docker Swarm is Docker's native clustering and orchestration tool that enables the management of a cluster of Docker nodes as a single virtual system. It simplifies the deployment, management, and scaling of containerized applications across multiple hosts. Docker Swarm transforms a group of Docker engines into a single, virtual Docker engine.
+
+### Key Features of Docker Swarm
+
+![](/static/blog/images/1_J77j6hJkK-3kouJri2XzOw.png)
+
+1. **Simple Setup and Configuration**: Docker Swarm is integrated into Docker, making it straightforward to set up and configure.
+
+2. **High Availability**: Swarm provides fault tolerance and high availability by ensuring that services are replicated across multiple nodes.
+
+3. **Scalability**: Easily scale your services up or down with a single command.
+
+4. **Rolling Updates**: Update services without downtime by using rolling updates.
+
+5. **Declarative Service Model**: Define the desired state of the services, and Swarm ensures the cluster matches this state.
+
+6. **Multi-host Networking**: Swarm handles multi-host networking, enabling communication between containers across different hosts.
+
+### Getting Started with Docker Swarm
+
+#### Step 1: Install Docker
+
+Before diving into Docker Swarm, ensure Docker is installed on all the nodes that will be part of your Swarm cluster. You can download Docker from the [official Docker website](https://www.docker.com/).
+
+#### Step 2: Open Necessary Ports
+
+Docker Swarm requires certain ports to be open for communication between nodes. Ensure the following ports are open on all nodes:
+
+- TCP port 2377 for cluster management communications
+
+- TCP and UDP port 7946 for communication among nodes
+
+- UDP port 4789 for overlay network traffic
+
+You can open these ports using `iptables` or your cloud provider's security groups.
+
+#### Step 3: Initialize Docker Swarm
+
+To initialize Docker Swarm, choose a manager node and run the following command:
+
+```
+docker swarm init --advertise-addr <MANAGER-IP>
+```
+
+Replace `<MANAGER-IP>` with the IP address of the manager node. This command initializes the current node as a manager node and ensures it advertises its address correctly.
+
+#### Step 4: Add Worker Nodes to the Swarm
+
+On each worker node, run the command provided by the `docker swarm init` output on the manager node. It will look something like this:
+
+```
+docker swarm join --advertise-addr
+```
+
+Replace `<TOKEN>` and `<MANAGER-IP>` with the actual token and IP address of your manager node.
+
+Replace the `<WORKER-PUBLIC-IP>` with the actual public IP address of your worker node.
+
+## Steps to Deploy
+
+1/ **Clone the Repository:**
+
+```
+git clone git@github.com-kokorolx:kokorolx/snowflake_id_web.git
+cd snowflake_id_web
+```
+
+**2/ Deploy the Stack:**
+
+```
+docker stack deploy -c docker-compose.yml my_stack
+```
+
+**3/ Verify the Deployment:**
+
+Check the status of your stack and services:
+`   docker stack ls   docker stack services my_stack   docker service ls`
+NOTE:
+**Service Constraints:** The database service (db) is constrained to run on manager nodes with placement.constraints.
+**Replicas:** The web service is configured to run with 2 replicas for high availability.
+**Update Configuration:** The update_config specifies how updates should be applied, including parallelism and delay.

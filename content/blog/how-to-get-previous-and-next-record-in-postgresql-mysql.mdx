@@ -1,0 +1,63 @@
+---
+title: 'How to get `previous` and `next` record in PostgreSQL/ MySQL'
+date: '2021-12-24'
+categories:
+  - 'technology'
+tags:
+  - 'postgresql'
+  - 'rails'
+coverImage: 'psql-1.x40801.png'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+1 bài toán cơ bản, nhỏ nhỏ lúc làm việc thôi.
+
+Đề bài là: Tìm record tiếp theo và record trước.
+
+Database dùng UUID vẫn có thể sử dụng được.
+
+## 1\. LAG
+
+`LAG(expr [, N[, default]])`
+
+Hàm trả về giá trị của n hàng trước kể từ row hiện tại, nếu không tồn tại hàng đó thì trả về giá trị default. Trường hợp để trống N & default thì mặc định N = 1 và default = NULL.
+
+## 2\. LEAD
+
+## `LEAD(expr [, N[, default]])`
+
+Tương tự như hàm LAG nhưng là trả về giá trị của hàng sau tính từ row hiện tại.
+
+```
+  # return Array [current_id, prev_id, next_id]
+  def current_prev_next
+    sql = "select *
+      from (
+          select  id, created_at,
+                  lag(id) over (order by created_at asc, updated_at asc, id asc) as prev,
+                  lead(id) over (order by created_at asc, updated_at asc, id asc) as next
+          from #{self.class.table_name}
+          ) x
+      where id = '#{id}';"
+
+    ActiveRecord::Base.connection.execute(sql).try(:first)
+  end
+```
+
+Bonus thêm 1 câu Arel nữa :)
+
+`The COALESCE() function returns the first non-null value in a list.`
+
+```
+# return ActiveRecord::Collection
+def next_post
+  Post.where('COALESCE(public_published_at, publish_at) >= ? AND publish_at <= ?', published_at, Time.current).where.not(id: id).reorder(Arel.sql('COALESCE(public_published_at, publish_at) ASC')).limit(1).first
+end
+
+# return ActiveRecord::Collection
+def previous_post
+  previous_post_time = published_at ? published_at : @object.created_at
+  Post.where('COALESCE(public_published_at, publish_at) < ? AND publish_at <= ?', previous_post_time, Time.current).where.not(id: id).reorder(Arel.sql('COALESCE(public_published_at, publish_at) DESC')).limit(1).first
+end
+```

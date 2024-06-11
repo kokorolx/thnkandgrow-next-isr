@@ -1,0 +1,326 @@
+---
+title: 'Cách cài đặt và deploy SailsJS với PM2 trên Ubuntu 20.04'
+date: '2021-06-06'
+categories:
+  - 'technology'
+tags:
+  - 'aws'
+  - 'mongodb'
+  - 'nginx'
+  - 'pm2'
+  - 'sailsjs'
+coverImage: 'sails-pm2.x40801.jpg'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+Mình có 1 trang web được viết bằng [SailsJS](https://sailsjs.com/), MongoDB và mình muốn deploy lên server một cách đơn giản nhất, chỉ cần gõ lệnh deploy thì sẽ có 1 tool nào đó giúp mình những việc như lên server pull code mới nhất về, cài đặt những package mới, restart server, v.v. Mình có tìm hiểu một vài cách deploy NodeJS trước đó thì mình thích dùng [PM2](https://pm2.keymetrics.io/) vì tính đơn giản và dễ dùng của nó. Ở bài viết này mình xin chia sẽ cách mình đã deploy lên EC2
+
+1. Setup EC2 instance
+2. Setup NodeJS environment
+3. Setup MongoDB
+4. Setup Nginx
+5. Setup PM2
+
+## **1\. Setup EC2 instance**
+
+Hiện tại mình đang dùng gói tier của AWS, setup Ubuntu 20.4 LTS
+
+![](/static/blog/images/image-3.png)
+
+Chọn instance t2 micro
+
+![](/static/blog/images/image-4.png)
+
+Ở bước tiếp theo: **Config instance**, **Add Storage**, **Add Tags** mình không có nhu cầu config nên **Next** luôn.
+
+Tiếp theo là **Step 6: Configure Security Group**, ở bước này mình cần mở một vài port để trang web có thể truy cập được từ internet.
+
+Những port đó là: **22** (SSH), **80**(HTTP), **443**(HTTPS)
+
+![](/static/blog/images/image-2.png)
+
+Sau khi hoàn tất những bước trên, bước cuối cùng là **Launch,** trong bước này bạn sẽ tạo mới hoặc chọn **key-pair**(key này dùng để SSH lên server và không thể thay đổi được nên cần có những phương pháp lưu trữ phù hợp với nó.)
+
+![](/static/blog/images/image-5.png)
+
+Bước cuối cùng là **Launch**. Chờ khoảng 5p thì server sẽ setup xong.
+
+Một số step **NÊN LÀM** sau khi setup xong instance:
+
+1. **Đặt tên instance** (đơn giản nhưng quan trọng lắm nha)
+
+![](/static/blog/images/image-6.png)
+
+2\. Chỉ định elastic IP (**Allocate** **Elastic IP** **address**)
+
+![](/static/blog/images/image-7.png)
+
+![](/static/blog/images/image-8.png)
+
+Lấy xong nhớ đặt tên nhé
+
+![](/static/blog/images/image-9.png)
+
+Chọn IP cần chỉ định
+
+![](/static/blog/images/image-10.png)
+
+Chọn instance và click **Associate**
+
+![](/static/blog/images/image-11.png)
+
+**Note:** Để bắt đầu những bước tiếp theo cần phải SSH vào instance vừa tạo, lệnh như sau:
+
+Cấp quyền **400** cho file **.pem**
+
+```
+chmod 400 <path/to/pem/file.pem>
+```
+
+```
+ssh ubuntu@<ip> -i <path/to/pem/file.pem>
+```
+
+## **2\. Setup NodeJS environment**
+
+**2.1. Cài đặt NodeJS 14.x:**
+
+```
+curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -;
+sudo apt-get install -y nodejs;
+```
+
+Sau khi cài Nodejs xong, kiểm tra version xem có đúng chưa:
+
+```
+node -v
+=> v14.17.0
+npm -v
+=> 7.16.0
+```
+
+**2.2. Cài đặt Yarn và developent tool**: (You may also need development tools to build native addons)
+
+```
+## You may also need development tools to build native addons:
+     sudo apt-get install gcc g++ make;
+## To install the Yarn package manager, run:
+     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null;
+     echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list;
+     sudo apt-get update && sudo apt-get install yarn;
+```
+
+## **3\. Setup MongoDB**
+
+bạn có thể tham khảo [ở đây](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/)
+
+```
+wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -;
+
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list;
+
+sudo apt-get update;
+
+sudo apt-get install -y mongodb-org;
+```
+
+Sau khi cài đặt xong MongoDB
+
+**Start Mongo**:
+
+```
+sudo systemctl start mongod
+```
+
+**Start mongodb sau khi reboot:**
+
+```
+sudo systemctl enable mongod
+```
+
+Một số lệnh cơ bản, bạn có thể xem thêm tại [đây](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/#start-mongodb)
+
+## **4\. Setup Nginx**
+
+Bạn có thể tham khảo tại [đây](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04)
+
+Để bắt đầu cài đặt Nginx, gõ lệnh sau
+
+```
+sudo apt update
+sudo apt install nginx
+```
+
+Để kiểm tra Nginx đã được cài đặt thành công hay chưa
+
+```
+nginx -v
+=> nginx version: nginx/1.18.0 (Ubuntu)
+```
+
+**Config Nginx**
+
+Sử dụng lệnh sau để tạo file config cho website:
+
+```
+sudo nano /etc/nginx/sites-available/<website>.conf // thay thế website bằng tên website của bạn, ví dụ my-pet.conf
+```
+
+Do SailsJS chạy ở port **1337** nên config của mình sẽ như sau(copy dán vào thôi):
+
+```
+proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=STATIC:10m inactive=7d use_temp_path=off;
+
+server {
+    server_name 18.223.173.52;
+    server_tokens off;
+
+    gzip on;
+    gzip_proxied any;
+    gzip_comp_level 4;
+    gzip_types text/css application/javascript image/svg+xml;
+
+
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+
+    location / {
+            proxy_pass http://localhost:1337;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_buffers 8 16k;
+            proxy_buffer_size 32k;
+    }
+}
+```
+
+**Lưu ý:**
+
+Cần thay đổi **server_name** là địa chỉ IP hoặc domain_name của bạn.
+
+Bước tiếp theo cần làm là symlink file config vừa tạo vào thư mục \***\*`/etc/nginx/sites-enabled/`\*\***
+
+```
+cd /etc/nginx/sites-enabled/;
+sudo ln -s <website>.conf /etc/nginx/sites-available/<website>.conf
+```
+
+Test lại kết quả Nginx thế nào:
+
+```
+sudo nginx -t
+
+=> nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+=> nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+
+Nếu kếu quả ra như trên là ổn rồi, restart Nginx để apply config mới.
+
+```
+sudo systemctl restart nginx
+```
+
+Xong phần config Nginx.
+
+## **5\. Setup PM2**
+
+PM2 là .. PM2 is a daemon process manager that will help you manage and keep your application online 24/7
+
+Bạn hãy xem thêm tại [đây](https://pm2.keymetrics.io/)
+
+Để setup deploy bằng PM2 ta cần**:**
+
+- Setup PM2 ở server bằng câu lệnh: **`npm install -g pm2`**
+- Setup PM2 ở local bằng câu lệnh: **`npm install -g pm2`**
+
+**5.1 Ở máy local**
+
+Tạo file **ecosystem.config.js** như hình.
+
+![](/static/blog/images/image-13.png)
+
+Nội dung file **ecosystem.config.js**:
+
+```
+module.exports = {
+  apps: [
+    {
+      name: 'my-pet-web',
+      script: 'app.js',
+      env_production: {
+        NODE_ENV: 'production',
+      },
+    },
+  ],
+  deploy: {
+    // "production" is the environment name
+    production: {
+      // SSH key path, default to $HOME/.ssh
+      key: '<path-to-pem-file>',
+      // key: '.cert/ec2-my-pet-web.pem',
+      // SSH user
+      user: 'ubuntu',
+      // SSH host
+      host: [<your host ip>],
+      // host: ['18.223.173.52'],
+      // SSH options with no command-line flag, see 'man ssh'
+      // can be either a single string or an array of strings
+      ssh_options: 'StrictHostKeyChecking=no',
+      // GIT remote/branch
+      ref: 'origin/deploy',
+      // GIT remote
+      repo: 'https://<github_user_name>:<github_personal_key>@github.com/<github_url>',
+      // repo: 'https://kokorolx:ghp_1234567890876543@github.com/kokorolx/my-pet-web.git',
+      // path in the server
+      path: '/var/www/my-pet-web',
+      // Pre-setup command or path to a script on your local machine
+      // Post-setup commands or path to a script on the host machine
+      // eg: placing configurations in the shared dir etc
+      'post-setup':
+        'echo \'post setup.........\'; cp /var/www/my-pet-web/shared/.env /var/www/my-pet-web/current/.env; yarn install; pm2 start yarn --name my-pet-web --interpreter bash -- start; pm2 l;',
+      // post-deploy action
+      'post-deploy':
+        'echo \'post deploy.........\';cp /var/www/my-pet-web/shared/.env /var/www/my-pet-web/current/.env; yarn install; pm2 restart my-pet-web; pm2 l;',
+    },
+  },
+};
+```
+
+**Lưu ý:**
+
+**repo**: chỗ này là repo URL của bạn, có thể generate **personal key** để deploy, cách generate [tại đây](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token), tùy theo dự án mà có cách thay đổi URL chỗ này, nếu bất kỳ ai cũng có quyền deploy thì nên gắn **personal key** vào URL để tiện, không cần phải config SSH ở server.
+
+**post-setup**: Dành cho lần deploy đầu tiên, PM2 sẽ tạo folder theo **path** trong file config. Copy file **.env** (file này phải tự tạo, chứa những enviroment variable của dự án), chạn yarn và start dự án bằng lệnh **`pm2 start yarn --name my-pet-web --interpreter bash -- start`**;
+
+Script deploy lần đầu:
+
+```
+pm2 deploy production setup // lưu ý tên stage nhé, của mình là production
+```
+
+**post-deploy**: Dành cho những lần chạy tiếp theo, PM2 sẽ copy file **.env**, chạy yarn, và restart lại app.
+
+Script deploy những lần tiếp theo:
+
+```
+pm2 deploy production update // lưu ý tên stage nhé, của mình là production
+```
+
+Sau khi chạy thành công thì mở browser test thôi (cool)
+
+Câu lệnh cuối cùng và rất quan trọng ở máy **server**, nó sẽ giúp PM2 tự khởi động lại những app đang chạy sau khi bạn **reboot** máy server.
+
+```
+pm2 save
+```
+
+Bài viết đến đây là hết.
+
+Chúc mọi người config server thành công nhé.

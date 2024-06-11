@@ -65,7 +65,10 @@ async function generate() {
     const tags = await getAllTags();
     for (const tag of Object.keys(tags)) {
       const filteredPosts = allBlogs.filter(
-        (post) => post.draft !== true && post.tags.map((t) => GithubSlugger.slug(t)).includes(tag)
+        (post) =>
+          post.draft !== true &&
+          post.tags &&
+          post.tags.map((t) => GithubSlugger.slug(t)).includes(tag)
       );
       const rss = generateRss(filteredPosts, `tags/${tag}/feed.xml`);
       const rssPath = path.join('public', 'tags', tag);

@@ -1,0 +1,67 @@
+---
+title: 'How to Calculate Puma WEB_CONCURRENCY and MAX_THREADS for Optimal Rails Application Performance'
+date: '2023-04-02'
+categories:
+  - 'technology'
+coverImage: '7510b380-cfe5-11e9-8391-85577ac28ede.x40801.png'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+## 1/ What is Puma?
+
+Puma is a high-performance, multi-threaded web server designed specifically for Ruby on Rails applications. It's a lightweight and scalable Rack-compatible HTTP server capable of serving both static and dynamic content. Due to its exceptional performance, scalability, and low memory usage, Puma is a favored choice for high-traffic web applications. Paired with Nginx as a reverse proxy server, Puma provides a robust infrastructure for fast and reliable web application delivery. Additionally, Puma is designed to work seamlessly with the Ruby on Rails application server interface (ASGI) specification, making it compatible with a wide range of ASGI-compliant web frameworks.
+
+## 2/ What is WEB_CONCURRENCY and MAX_THREADS
+
+`WEB_CONCURRENCY` and `MAX_THREADS` are environment variables used to configure the number of worker processes and threads used by the Puma web server in a Ruby on Rails application.
+
+- `WEB_CONCURRENCY`: It specifies the number of worker processes to run in parallel to handle incoming HTTP requests. This value should be set based on the available CPU resources on the server. As a general rule of thumb, it can be calculated by multiplying the number of CPU cores with a factor that takes into account the memory available on the server. The formula for calculating `WEB_CONCURRENCY` is often recommended to be `(2 * number of CPU cores) + 1`.
+- `MAX_THREADS`: It specifies the number of threads to be used in each worker process to process requests concurrently. This value should be set based on the available memory on the server. As a general rule of thumb, it can be set to a value between 1 and 5, depending on the size of the requests and the memory requirements of the application.
+
+Both of these values are critical to the performance and scalability of a Ruby on Rails application running on the Puma web server.
+
+## 3/ Formulas
+
+```
+WEB_CONCURRENCY = (CORES * (1 + RAM / GB_PER_CORE) / 2).floor
+
+OR
+
+WEB_CONCURRENCY = (2 * number of CPU cores) + 1
+```
+
+```
+MAX_THREADS = (RAM / WEB_CONCURRENCY / 25).floor * 5
+```
+
+Where:
+
+- `CORES` is the number of CPU cores available on your server (in your case, 1 for EC2 instance type t2.micro)
+- `RAM` is the amount of RAM available on your server (in your case, 2GB)
+- `GB_PER_CORE` is the amount of RAM per core (typically 2-4GB depending on your workload)
+
+## 3/ Ten common EC2 instances
+
+| EC2 Instance Type | vCPUs | Memory (GB) | WEB_CONCURRENCY | MAX_THREADS |
+| ----------------- | ----- | ----------- | --------------- | ----------- |
+| t2.micro          | 1     | 1           | 2               | 5           |
+| t2.small          | 1     | 2           | 4               | 10          |
+| t2.medium         | 2     | 4           | 8               | 20          |
+| t3.micro          | 2     | 1           | 2               | 5           |
+| t3.small          | 2     | 2           | 4               | 10          |
+| t3.medium         | 2     | 4           | 8               | 20          |
+| m5.large          | 2     | 8           | 16              | 40          |
+| m5.xlarge         | 4     | 16          | 32              | 80          |
+| m5.2xlarge        | 8     | 32          | 64              | 160         |
+| m5.4xlarge        | 16    | 64          | 128             | 320         |
+
+Note: The above values are recommendations and may need to be adjusted based on the specific needs of your application.
+
+The `WEB_CONCURRENCY` value represents the number of Puma worker processes that will be spawned to handle incoming requests. This should be set based on the number of available CPU cores on the EC2 instance. A good starting point is to set the `WEB_CONCURRENCY` equal to the number of vCPUs on the instance.
+
+The `MAX_THREADS` value represents the maximum number of concurrent requests that can be handled by each worker process. This should be set based on the amount of available memory on the EC2 instance. A good starting point is to set the `MAX_THREADS` to the number of cores multiplied by 5.
+
+For example, for an `m5.xlarge` instance with 4 vCPUs and 16GB of memory, we would set `WEB_CONCURRENCY` to 4 and `MAX_THREADS` to 80 (4 cores x 5 threads per core x 4 worker processes).
+
+It's important to note that these values should be tested and adjusted based on the specific needs and workload of your application.

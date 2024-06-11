@@ -4,7 +4,7 @@ import ScrollProgressBar from '@/components/ScrollProgressBar';
 import PostLayout from '@/layouts/MDX/PostLayout';
 import MainLayout from '@/layouts/MainLayout';
 import { coreContent, formatBlogLink, sortedBlogPost } from '@/lib/utils/contentlayer';
-import { allBlogs } from 'contentlayer/generated';
+import { allBlogs, Blog } from 'contentlayer/generated';
 import { Metadata } from 'next';
 
 export async function generateMetadata({
@@ -25,7 +25,11 @@ export async function generateMetadata({
   };
 }
 
-export default function BlogPost({ params }: { params: { slug: string } }) {
+export async function generateStaticParams() {
+  return allBlogs.map((post: Blog) => ({ slug: post._raw.flattenedPath }));
+}
+
+export default async function BlogPost({ params }: { params: { slug: string } }) {
   const slug = params.slug;
   const sortedPosts = sortedBlogPost(allBlogs);
 

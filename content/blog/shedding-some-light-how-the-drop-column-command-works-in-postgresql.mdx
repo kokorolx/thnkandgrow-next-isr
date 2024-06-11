@@ -1,0 +1,95 @@
+---
+title: 'Shedding Some Light: How the DROP COLUMN Command Works in PostgreSQL'
+date: '2024-04-18'
+categories:
+  - 'database'
+tags:
+  - 'database'
+  - 'postgresql'
+  - 'sql'
+coverImage: 'postgresql.webp'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+Imagine your PostgreSQL database as a filing cabinet. Over time, you might accumulate folders you no longer need. The `DROP COLUMN` command acts like a handy tool to declutter your cabinet, removing unnecessary columns from your tables. Let's break down how it works in a clear and concise way.
+
+![](/static/blog/images/OIG4.58Okjp6VaRBHp9oe0sep.jpg)
+
+## The Power of DROP COLUMN
+
+- **What it Does:** `DROP COLUMN` removes a specific column from a table. Think of it as taking out a drawer (column) from your filing cabinet (table).
+
+- **The Command:** Here's the basic structure:
+
+```
+ALTER TABLE table_name
+DROP COLUMN column_name;
+```
+
+`table_name`: The name of your table (the cabinet).
+`column_name`: The specific column (drawer) you want to remove.
+
+## **What Happens to the Data?**
+
+**Not a Complete Wipeout:** Important to note, `DROP COLUMN` doesn't erase the data stored in that column. Existing rows in the table will simply have `NULL` values where the removed column used to be. It's like taking out the drawer, but the papers (data) might still be scattered inside the cabinet (table).
+
+## **Reclaiming Space (Optional):**
+
+**`VACUUM FULL`:** If you want to recover the storage space occupied by the dropped column, you can use the `VACUUM FULL` command later. However, this is like thoroughly cleaning the cabinet, and it requires more resources than a simple `DROP COLUMN`.
+
+[https://www.postgresql.org/docs/current/sql-vacuum.html](https://www.postgresql.org/docs/current/sql-vacuum.html)
+
+## **Important Considerations:**
+
+**Multiple Deletions:** You can remove several columns at once by separating their names with commas:
+
+```
+ALTER TABLE table_name
+DROP COLUMN column1, column2, column3;
+```
+
+- **Empty Tables:** Be careful! Dropping the only column in a table will result in an empty table, essentially making it useless.
+
+- **Dependencies Matter:**`DROP COLUMN` won't work if the column is linked to other parts of your database, like:
+
+  - Primary or foreign key constraints (think of these as cross-references between folders)
+
+  - Indexes (like an organized filing system within a drawer)
+
+  - Views or other dependent objects (imagine these as reports that rely on specific drawers)
+
+- **Safety First:** Use the `IF EXISTS` clause to prevent errors if the column doesn't exist:
+
+```
+ALTER TABLE table_name
+DROP COLUMN IF EXISTS column_name;
+```
+
+## **Beyond the Basics**
+
+While `DROP COLUMN` is straightforward, keep these points in mind:
+
+- **Backup:** Always have a recent backup before making changes to your database.
+
+- **Impact Analysis:** Consider how removing the column might affect your queries and applications.
+
+- **Alternatives:** In some cases, anonymizing or archiving data might be a better option than deletion.
+
+## Can I add new column with the same name of dropped column in postgres?
+
+No, you cannot directly add a new column with the same name as a dropped column in PostgreSQL using a single `ALTER TABLE` statement. This is because PostgreSQL doesn't track dropped columns or their data types after the `DROP COLUMN` operation is complete.
+
+Here's why it's not possible:
+
+- **Schema Definition Change:** `DROP COLUMN` modifies the table's schema definition, essentially erasing the existence of the dropped column.
+
+- **Data Type Uncertainty:** PostgreSQL wouldn't know what data type to assign to the new column with the same name. The dropped column's data type might have been different from what you intend for the new column.
+
+## **In Summary**
+
+The `DROP COLUMN` command is a helpful tool for keeping your PostgreSQL tables clean and efficient. By understanding its functionality and limitations, you can effectively remove columns without compromising your data. Remember to plan and exercise caution before making any structural changes to your database schema.
+
+Happy Database Decluttering!
+
+Read more: [https://docs.aws.amazon.com/pt_br/dms/latest/oracle-to-aurora-postgresql-migration-playbook/chap-oracle-aurora-pg.tables.alter.html](https://docs.aws.amazon.com/pt_br/dms/latest/oracle-to-aurora-postgresql-migration-playbook/chap-oracle-aurora-pg.tables.alter.html)

@@ -1,0 +1,34 @@
+---
+title: 'Cách tìm ra method đang được gọi trong Ruby'
+date: '2022-04-19'
+categories:
+  - 'technology'
+tags:
+  - 'debug'
+  - 'ruby'
+coverImage: '352320.x40801.jpg'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+Sẵn đây e xin phép chia sẽ 1 trick để debug trong ruby với mọi người, ai biết rồi thì bỏ qua cho em nha (hi vọng không phải em là người biết cuối cùng (rofl))
+
+Chuyện là trong dự án có rất nhiều module, gem được include vào \`active_record.rb\`, khi mình định nghĩa 1 method mới mà lỡ trùng với method của gem nào đó đã defined rồi(và include vào sau) thì nó sẽ gọi method đó.
+
+Issue của em là: define 1 method mới tên là publish, xui cái là nó đã được define rồi nên lúc chạy nó bào lỗi private method.
+
+![](/static/blog/images/send-ruby.png)
+
+Cách để tìm method nó đang gọi là dùng **send**
+
+![](/static/blog/images/send-ruby-to-find-private-method.png)
+
+... và thế là chúa đã giúp em tìm ra được nguyên nhân bị **private method**. Method `publish` đã được defined trong gem \`wisper\`
+
+Câu chuyện của em đến đây là hết ạ.
+
+Thanks to Deepesh.
+
+```
+Simple note for me!
+```

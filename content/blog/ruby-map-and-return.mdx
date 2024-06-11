@@ -1,0 +1,40 @@
+---
+title: '[Ruby] Map and return?'
+date: '2022-01-13'
+categories:
+  - 'technology'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+Hôm nay nhận được 1 câu hỏi đến từ vị trí của CườngNĐ, mình vẫn chưa tìm hiểu lý do tại sao lại có kết quả khác nhau như vậy. Viết đây để nhớ, mai mốt tìm ra lý do rồi update lại bài blog này
+
+Câu hỏi:
+
+```
+# ruby
+arr =[[1,2], [3,4], [5,6]]
+arr.map{|a,b| return a if a + b > 10}
+
+#> LocalJumpError (unexpected return)
+Nếu đổi lại thế này
+arr.map{|a,b| a if a + b > 10}
+#> [nil, nil, 5]
+```
+
+Và nếu để vào method như thế này
+
+```
+# ruby
+
+
+def test_arr
+  arr =[[1,2], [3,4], [5,6]]
+  arr.map{|a, b| return a if a + b > 10}
+end
+
+#> 5
+```
+
+[Tại sao nhỉ?
+](https://makandracards.com/makandra/46939-ruby-a-small-summary-of-what-return-break-and-next-means-for-blocks#section-return-within-a-block)

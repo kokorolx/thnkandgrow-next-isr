@@ -1,0 +1,57 @@
+---
+title: 'Publish môi trường local ra internet bằng Cloudflare Tunnels - Publish local environment to the internet using Cloudflare Tunnels'
+date: '2021-09-21'
+categories:
+  - 'technology'
+tags:
+  - 'argo-tunnel'
+  - 'cloudflare-tunnels'
+  - 'publish-local-enviroment-to-internet'
+  - 'tunnels-services'
+coverImage: 'argo.x40801.png'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+## 1\. why?
+
+Trong lập trình, đôi khi chúng ta cần expose localhost ra internet vì một số lý do:
+
+- Cần cho QC/QA test features đã ở local. Đang không dùng mạng local nên không dùng IP để vào local của dev được
+- Cần test/debug HTTPS khi develop, và tự setup 1 SSL ở local cũng khá lằng nhằm và phức tạp.
+- Khi intergate 3rd party và có webhook ví dụ như Stripe, Paypal, vv.
+
+## 2\. how?
+
+Để làm được những việc này, ta cần dùng những dịch vụ tunnels, thường thì mình dùng `ngrok`. Tuy nhiên nó khá bất tiện nếu bạn dùng gói free.
+
+Một số nhược điểm đáng chú ý của ngrok FREE là:
+
+- Rất chậm
+- Bị limit thời gian
+- Những project 1 số lượng lớn request đồng thời thì sẽ bị lỗi 429 ngay. Thường là dùng để download image/CSS/JS lúc đầu tiên khi vào web.
+
+## 3\. solution
+
+Gần đây Cloudflare có phát triển 1 feature có tên [Cloudflare Tunnels](https://www.cloudflare.com/products/tunnel/). Nhìn chung cách hoạt động giống ngrok nhưng ko có nhiều limit (có thể coi như ko có).
+
+Các bạn nhớ đọc kỹ hướng dẫn sử dụng trước khi dùng nhé: [https://developers.cloudflare.com/cloudflare-one/tutorials/share-new-site](https://developers.cloudflare.com/cloudflare-one/tutorials/share-new-site)
+
+**Mình sẽ tóm tắt cách cài đặt như sau:**
+
+1. Cài `Cloudflared`, xem chi tiết: [https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation). Ngắn gọn hơn thì:
+   1. macOS: `brew install cloudflare/cloudflare/cloudflared`
+   2. Ubuntu: add Cloudflare package repository theo guide: [https://pkg.cloudflare.com/#ubuntu-title](https://pkg.cloudflare.com/#ubuntu-title), sau đó `sudo apt install cloudflared`
+2. Run `cloudflared tunnel --url localhost:3000` (`localhost:3000` là local env URL dev thường dùng để test). Trong output sẽ có 1 URL dạng như [https://coal-tile-printed-trading.trycloudflare.com](https://coal-tile-printed-trading.trycloudflare.com/), đây là public URL, khi vào sẽ giống như dùng localhost:3000 nhưng đã được published ra internet và proxied qua Cloudflare
+
+## 4\. conclusion
+
+Cloudflare Tunnels là 1 trong những dịch vụ expose localhost ra internet miễn phí và tốt nhất hiện nay.
+
+Khi nào có dịp mình sẽ làm bài hướng dẫn chi tiết hơn nhé.
+
+Reference:
+
+[https://developers.cloudflare.com/cloudflare-one/tutorials/share-new-site](https://developers.cloudflare.com/cloudflare-one/tutorials/share-new-site)
+
+Note của anh NămTV - NUS - Thank anh!

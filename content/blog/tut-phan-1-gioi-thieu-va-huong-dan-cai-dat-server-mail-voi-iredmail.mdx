@@ -1,0 +1,232 @@
+---
+title: '[TUT] Phần 1 – Giới thiệu và hướng dẫn cài đặt server mail với iRedMail'
+date: '2021-05-04'
+categories:
+  - 'technology'
+tags:
+  - 'aws'
+  - 'iredadmin'
+  - 'iredmail'
+  - 'mail-server'
+coverImage: 'serveur-iredmail-messagerie.x40801.jpeg'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+Như phần trước mình có giới thiệu, hôm nay mình sẽ hưỡng dẫn các bạn cài đặt iRedMail server.
+
+## Table of content:
+
+1. **Mail server là gì?**
+2. **Ưu điểm và nhược điểm khi tự setup mail server thay vì thuê**
+3. **Giới thiệu iRedMail và một số chức năng chính của iRedAdmin**
+4. **Cài đặt iRedMail trên ubuntu AWS EC2**
+5. **Sử dụng Mailgun để gửi và nhận mail**
+6. **Kết luận**
+
+**1\. Mail server là gì?
+**Mail server hay server mail là một máy tính được cài một tập các chương trình với nhiệm vụ chính là quản lý email, gửi và nhận email.
+
+Mail server cho phép bạn tạo và quản lý các tài khoản email. Ví dụ: nếu bạn có hostname là **thnkandgrow.com** thì mail server có thể cung cấp email dưới dạng **admin@thnkandgrow.com.**
+
+Mail server gửi và nhận email dựa trên các chuẩn giao thức email. Ví dụ: SMPT để gửi và xử lý các yêu cầu gửi email(outgoing email) và giao thức IMAP/POP3 dùng để xử lý các email nhận(incoming email).
+
+Khi login vào 1 webmail(ví dụ thunder bird, rubocube) thì những giao thức này được sử dụng phía sau.
+Mail server có 2 loại: Email as a Service (EaaS) và Self-hosted email
+
+**2\. Ưu điểm và nhược điểm khi tự setup mail server thay vì dùng EaaS**
+
+<figure>
+
+| \-                | Ưu điểm                         | Nhược điểm |
+| ----------------- | ------------------------------- | ---------- |
+| Self-hosted email | \- Thường dùng cho doanh nghiệp |
+
+\- Giá cả hợp lý
+\- Có thể dễ dàng scale
+\- Đảm bảo tính riêng tư(tất cả các email đều được nằm trên server của chúng ta) | \- Khó cài đặt
+\- Antivirus/spam nhiều lúc hoạt động không chính xác
+\- Thường bị mark spam email |
+| Email as a Service | \- Thường dùng cho cá nhân
+\- Dễ cài đặt và sử dụng
+\- Bảo mật
+\- Antivirus/spam tốt
+\- Thường support 24/7 | \- Giá khá cao và thường tính theo user/month
+\- Tính riêng tư không chắc được đảm bảo |
+
+<figcaption>
+
+pros and cons self-hosted email and EaaS
+
+</figcaption>
+
+</figure>
+
+**3\. Giới thiệu iRedMail và một số chức năng chính của iRedAdmin**
+
+iRedMail được ra đời năm 2007, là 1 phần mềm mã nguồn mở, cho phép cài đặt trên các nền tảng phổ biến như RedHat, CentOS, Debian, Ubuntu, FreeBSD, OpenBSD.
+
+iRedMail đã được tích hợp tất cả những thành phần mã nguồn mở cùng nhau và áp dụng những phương pháp hay nhất, bạn chỉ cần chạy một vài script là có 1 mail server.
+
+Bạn có thể tìm hiểu thêm về iRedMail [tại đây](https://www.iredmail.org/index.html) và một số chức năng của iRedAdmin tại [Features list of iRedAdmin-Pro](https://www.iredmail.org/admin_panel.html). - có thể sử dụng demo tại đây: [iRedAdmin-Pro demo](https://www.iredmail.org/admin_demo.html)
+
+**4\. Cài đặt iRedMail trên ubuntu AWS EC2**
+
+Mình đã follow bài này để làm theo, 100% cài được :D [Install iRedMail Debian, Ubuntu](https://docs.iredmail.org/install.iredmail.on.debian.ubuntu.html)
+
+Một số lưu ý khi cài đặt:
+
+**System Requirements**: nên cài trên instance mới, sạch sẽ hoàn toàn.
+
+Để iRedMail hoạt động một cách trơn tru thì các bạn có thể tham khảo những port cần phải mở ở bài viết document của iRedMail nhé: [Which network ports are open by iRedMail](https://docs.iredmail.org/network.ports.html)
+
+> iRedMail is designed to be deployed on a **FRESH** server system, which means your server does **NOT** have mail related components installed, e.g. MySQL, OpenLDAP, Postfix, Dovecot, Amavisd, etc.
+
+RAM: ít nhất 2Gb (nhỏ hơn, tạo swap cũng không chạy nỗi nha), tốt nhất là 4Gb.
+
+[UID/GID](https://geek-university.com/linux/uid-user-identifier-gid-group-identifier/): Không sử dụng 2000, 20001, 2002
+
+VPS phải có khả năng mở port 25. Thông thường bạn phải viết mail xin phép mở port này.
+\=> **DigitalOcean không cho phép mở.**
+
+> Many ISPs block port 25 by default, it's used for communication between mail servers, it must be open, otherwise your server may be not able to receive or / and send emails. Please contact your ISP to make sure it's not blocked, or ask them to unblock.
+>
+> \- Amazon AWS EC2. Request to [remove the throttle on port 25](https://aws.amazon.com/premiumsupport/knowledge-center/ec2-port-25-throttle/).
+> \- Google Cloud Platform.
+> \- Microsoft Azure.
+> \- Linode. Explained in the [blog post](https://www.linode.com/blog/linode/a-new-policy-to-help-fight-spam/), you can open a support ticket to request the Linode team to open it. If you [sign up to Linode with our reference](https://www.linode.com/?r=b4d04083428fb99ce452d84b57253d11692a0850), iRedMail Team's Linode account will receive a credit of $15-20.00. Thanks.
+> \- DigitalOcean. According to [a post in their community](https://www.digitalocean.com/community/questions/port-25-465-is-blocked-how-can-i-enable-it), **SEEMS** impossible to unblock port 25, that means you can **NOT** run mail server on DigitalOcean VPS.
+
+Sau khi cài đặt xong bạn có thể mở file `**/root/iRedMail-x.y.z/iRedMail.tips**` để xem các thông tin của server.
+
+**Một số bước cần lưu ý sau khi setup thành công iRedMail:
+**\- [Setup DNS record](https://docs.iredmail.org/setup.dns.html). Tất nhiên rồi, nếu bạn không config DNS thì mail biết đi đâu, về đâu :D
+\- [Cài đặt SSL certificate](https://docs.iredmail.org/letsencrypt.html). Nếu có SSL, bạn sẽ tránh khỏi những cảnh báo khi sử dụng web browser hoặc mail client truy cập mailbox. Đơn giản lắm.
+
+**5\. Sử dụng Mailgun để gửi và nhận mail**
+
+Chúc mừng các bạn, cuối cùng chúng ta đã setup gần xong 1 Mail Server rồi, nhưng nó vẫn chưa gửi mail được. Các lý do bạn cần phải xem xét:
+
+1. Đã mở được các port cần thiết chưa?
+2. Đã xin phép để mở port **25** chưa?
+
+Nếu xin phép để mở port **25** làm bạn quá tốn thời gian và sức lực, bạn có thể sử dụng [MailGun](https://thnkandgrow.com/blog/2021/04/04/tut-phan-2-gioi-thieu-mailgun-mot-nha-cung-cap-dich-vu-smtp-mien-phi/\(opens in a new tab\)) như 1 bộ chuyển tiếp(relay) để gửi và nhận email.
+
+Tất nhiên là bạn cần có 1 tài khoản ở MailGun.com rồi, ghé vào [đây](https://signup.mailgun.com/new/signup) để đăng ký nhé
+
+Các bước làm như sau:
+
+**_Notice:_** Postfix installed by default when setup iRedMail
+
+**Step 1**: SSH to iRedMail server
+
+```
+ssh <your-user>@<your-server-ip>
+```
+
+**Step 2**:  Login to root user
+
+```
+sudo su
+```
+
+**Step 3:** Modify the Postfix configuration options.
+Open postfix config:
+
+```
+vi /etc/postfix/main.cf
+```
+
+> If they exist, comment out the following lines.
+
+```
+# default_transport = error
+```
+
+```
+# relay_transport = error
+```
+
+Add the Mailgun SMTP service by adding the following line to **the end of the file.**
+
+```
+relayhost = [smtp.mailgun.org]:2525
+```
+
+To enforce SSL/TLS support and configure SMTP authentication for these requests, add the following lines to the end of the file. A simple access and security layer (SASL) module handles authentication in the Postfix configuration.
+
+```
+smtp_sasl_auth_enable = yes // nếu không gửi mail được có thể bạn đã setup cerrtificate sai. Chuyển sang No hoặc May hoặc nghiên cứu cài lại certificate.
+```
+
+```
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+```
+
+```
+smtp_sasl_security_options = noanonymous
+```
+
+Save your changes and close the file.
+**Step 4:** Generate the SASL password map.Create a new password file that is ready for standard input.
+
+```
+cat > /etc/postfix/sasl_passwd << EOF
+```
+
+At the prompt, enter the service details, replacing YOUR_SMTP_LOGIN and YOUR_SMTP_PASSWORD with your credentials. See the [Mailgun help](https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials) for instructions on how to view or change your per-domain credentials.
+
+```
+[smtp.mailgun.org]:2525 YOUR_SMTP_LOGIN:YOUR_SMTP_PASSWORD
+```
+
+Close and save the file by typing the delimiter, EOF .
+Use the postmap utility to generate a .db file.
+
+```
+postmap /etc/postfix/sasl_passwd
+```
+
+```
+ls -l /etc/postfix/sasl_passwd*
+```
+
+```
+-rw------- 1 root root   101 Apr  5 08:04 /etc/postfix/sasl_passwd
+```
+
+```
+-rw------- 1 root root 12288 Apr  5 08:04 /etc/postfix/sasl_passwd.db
+```
+
+Next, remove the file that contains your credentials because it is no longer needed.
+
+```
+rm /etc/postfix/sasl_passwd
+```
+
+Set the permissions on your .db file.
+
+```
+chmod 600 /etc/postfix/sasl_passwd.db
+```
+
+Restart postfix
+
+```
+/etc/init.d/postfix restart
+```
+
+Test your configuration. Install the **mailx** or **mailutils** package and test your configuration.
+
+**6\. Kết luận**
+
+Để setup được một self-hosted mail bạn cần phải học kha khá kiến thức mới về mail server, những ứng dụng đi kèm. Bên cạnh những ưu điểm của self-hosted mail thì bạn cũng cần phải xem xét những nhược điểm của nó trước khi đưa ra quyết định thuê EaaS hay Self-hosted mail nhé.
+
+_reference:_
+1\. _https://techterms.com/definition/mail_server_
+2\. https://www.iredmail.org/
+
+## To be continued...
+
+Bài tiếp theo: [Phần 2 - Giới thiệu MailGun - một nhà cung cấp dịch vụ SMTP miễn phí](https://thnkandgrow.com/blog/2021/04/04/tut-phan-2-gioi-thieu-mailgun-mot-nha-cung-cap-dich-vu-smtp-mien-phi/\(opens in a new tab\))

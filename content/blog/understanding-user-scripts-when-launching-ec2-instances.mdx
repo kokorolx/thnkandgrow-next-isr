@@ -1,0 +1,112 @@
+---
+title: 'Understanding User Scripts When Launching EC2 Instances'
+date: '2023-05-13'
+categories:
+  - 'aws'
+  - 'technology'
+  - 'tips'
+tags:
+  - 'aws'
+coverImage: 'Amazon-EC2.jpg'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+Amazon Elastic Compute Cloud (EC2) is a popular cloud computing service that allows users to launch virtual servers, also known as instances, in the cloud. When launching an EC2 instance, users can provide a user script, also known as user data, that will be executed during the instance's launch process. In this blog post, we will discuss user scripts in more detail and how they can be used to automate instance configuration and management tasks.
+
+## What are User Scripts?
+
+User scripts are scripts that are executed when an EC2 instance is launched. They can be written in any scripting language, including bash, Python, or PowerShell, and are passed to the instance during launch as part of the instance metadata. User scripts can be used to perform various tasks, such as installing software, configuring the instance, and running custom scripts.
+
+## Why Use User Scripts?
+
+User scripts can be used to automate the process of launching and configuring EC2 instances. This can save time and reduce the chance of errors when configuring instances manually. For example, you can use user scripts to automatically install and configure web servers, databases, or other software on the instance. User scripts can also be used to customize instances based on your specific needs, such as setting up a specific directory structure or configuring the network settings.
+
+## How to Use User Scripts?
+
+To use a user script when launching an EC2 instance, you can provide the script as part of the instance's user data. This can be done through the EC2 console, API, or command-line interface. When the instance is launched, the user script will be passed to the instance and executed automatically.
+
+It's important to note that user scripts should be idempotent, meaning that they should be able to be executed multiple times without causing issues. This is because EC2 instances can be stopped and started multiple times during their lifetime, and the user script will be executed each time the instance is launched.
+
+Example user script to deploy Rails app with redis, nodejs, ruby installed with rvm, postgresql and puma config for nginx (for **ubuntu**)
+
+```
+#!/bin/bash
+sudo apt-get update
+sudo apt-get -y install build-essential libssl-dev libreadline-dev zlib1g-dev git
+sudo apt-get -y install libpq-dev postgresql postgresql-contrib
+sudo apt-get -y install redis-server
+sudo apt-get -y install nodejs
+sudo apt-get -y install nginx
+
+# Install RVM and Ruby
+sudo apt-add-repository -y ppa:rael-gc/rvm
+sudo apt-get update
+sudo apt-get -y install rvm
+source /etc/profile.d/rvm.sh
+rvm install 2.7.4
+rvm use 2.7.4 --default
+
+# Install Bundler
+gem install bundler
+
+# Configure PostgreSQL
+sudo -u postgres createuser --superuser ubuntu
+sudo -u postgres createdb -O ubuntu myapp_production
+
+# Configure Nginx
+sudo rm /etc/nginx/sites-enabled/default
+sudo touch /etc/nginx/sites-available/myapp
+sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
+sudo bash -c "cat > /etc/nginx/sites-available/myapp" <<EOF
+upstream myapp {
+  server unix:///var/www/myapp/myapp.sock;
+}
+
+server {
+  listen 80;
+  server_name myapp.com;
+
+  root /var/www/myapp/public;
+
+  try_files \$uri/index.html \$uri @myapp;
+
+  location @myapp {
+    proxy_pass http://myapp;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_redirect off;
+    proxy_buffering off;
+    proxy_http_version 1.1;
+    proxy_set_header Connection '';
+    chunked_transfer_encoding off;
+    proxy_cache_bypass \$http_pragma;
+    proxy_cache_revalidate on;
+    proxy_cache_valid 200 5m;
+    expires 5m;
+  }
+}
+EOF
+
+sudo service nginx restart
+```
+
+When the instance is booted for the first time, this script will run and the output will be in the `/var/log/cloud-init-output.log` directory on your instance.
+
+## Best Practices for Using User Scripts
+
+When using user scripts, there are some best practices to follow to ensure that they are effective and reliable:
+
+1. Use version control: User scripts should be stored in a version control system, such as Git, to ensure that they can be easily tracked and modified over time.
+2. Test your scripts: Before using user scripts in production, they should be thoroughly tested to ensure that they work as expected.
+3. Keep scripts simple: User scripts should be simple and easy to read, to avoid potential issues when troubleshooting.
+4. Use cloud-init: Cloud-init is a tool that can be used to configure and customize instances when they are launched. It can be used to install packages, run scripts, and set up users and SSH keys.
+5. Use pre-built scripts: There are many pre-built scripts available online that can be used as a starting point for configuring instances. These can save time and reduce the risk of errors when writing user scripts from scratch.
+
+## Conclusion
+
+User scripts are a powerful tool for automating the process of launching and configuring EC2 instances. By providing a script during instance launch, users can automate the installation and configuration of software, customize instances to their specific needs, save time, and reduce the risk of errors when configuring instances manually. By following best practices for using user scripts, such as testing scripts and keeping them simple, users can ensure that their instances are configured reliably and effectively.
+
+Notion: https://www.notion.so/hoangtamle/Deploy-rails-to-AWS-47d46f0310e54ebcb9b0c11e6b262b49?pvs=4

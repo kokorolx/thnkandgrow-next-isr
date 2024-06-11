@@ -1,0 +1,45 @@
+---
+title: 'Email Tips - Những mẹo nhỏ với Email'
+date: '2021-10-17'
+categories:
+  - 'technology'
+tags:
+  - 'alias-email'
+  - 'dev-email'
+  - 'email-tips'
+  - 'fake-smtp'
+coverImage: 'note-34686_640.x40801.png'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+### Email address dùng để test
+
+Thông thường chúng ta hay dùng anonymous email address (ví dụ: Yopmail) để test do thiếu unique email address khi tạo nhiều accounts. Trước đây việc này bình thường nhưng hiện nay thì nó có một số issues:
+
+1. Nhiều email services mà dev hay dùng để send emails đã chặn, ko gửi tới được anonymous email address
+2. Có một số services vẫn cho gửi nhưng sẽ ảnh hưởng reputation của account gửi mail (nếu reputation thấp quá sẽ ko gửi mail được nữa). Những services chặn cũng ảnh hưởng reputation do họ tính đó là 1 dạng bounced
+3. Tiềm ẩn risk về security khi email có info nhạy cảm
+
+Ngoài ra, một dạng khác là chúng ta dùng những email address ko có thật do app ko có email verification step. Tuy nhiên, app vẫn gửi email welcome or những emails thông báo gì đó. Do email address ko tồn tại nên bị bounced, dẫn tới reputation giảm mạnh.
+
+Vì vậy chúng ta ko nên sử dụng anonymous email address và email address ko thực sự tồn tại nữa.
+
+**Giải pháp**: sử dụng email alias. Email alias là dạng email `cto+abcxyz@meecook.com`. Email dạng này sẽ TỰ ĐỘNG gửi tới `cto@meecook.com` (bỏ qua tất cả từ dấu `+` trở đi). Vậy nên khi test chúng ta có thể sử dụng `cto+0001@meecook.com`, `namtv+0002@meecook.com`, v.v. để tạo accounts và vẫn nhận được tất cả email bằng 1 account mail duy nhất.
+
+Email alias còn được dùng để categorize emails dễ dàng hơn (đây là mục đích chính của alias). Ví dụ như email dùng để đăng ký project A có thể đặt là `cto+projecta@meecook.com` và tạo filter cho `to` là address này và move emails vào folder tương ứng chẳng hạn
+
+### Fake SMTP (cho dev)
+
+Trong một số trường hợp (thường là staging environment), chúng ta cần email service ko thực sự gửi mail, chỉ gom hết vào một chỗ để xem có email ko, nội dung thế nào. Hoặc đơn giản là khách hàng chưa cung cấp được SMTP account mà chúng ta vẫn cần test tính năng gửi mail. Dev trước nay đã có nhiều cách làm cho việc này như Mailcatcher (chủ yếu dùng local), Mailtrap (gói free nhiều limit).
+
+**Giải pháp**: nhanh và tiện nhất có lẽ là dùng [Ethereal Email](https://ethereal.email/). Chỉ vài giây là có SMTP account để dùng và nếu để dùng cho development/staging thì có thể coi như ko có limit gì (các emails sẽ bị delete sau vài giờ or vài ngày, tùy tình trạng server). Process:
+
+1. Vào trang chủ click `Create Ethereal Account`, Ethereal sẽ tạo SMTP account và show ra
+2. Dùng info này để đưa vào SMTP của project
+3. Vào [](https://ethereal.email/messages)[https://ethereal.email/messages](https://ethereal.email/messages) để xem các emails đã send (khi create account thì nó đã tự login)
+4. Cung cấp account information cho team members nếu cần. Account info này dùng để login ở [](https://ethereal.email/login)[https://ethereal.email/login](https://ethereal.email/login) để xem emails
+
+**Đã test!**
+
+> Lấy cảm hứng từ note của boss

@@ -1,0 +1,98 @@
+---
+title: '[TUT] Series hướng dẫn setup Server mail'
+date: '2021-04-04'
+categories:
+  - 'technology'
+tags:
+  - 'aws'
+  - 'iredmail'
+  - 'mail-server'
+  - 'mailgun'
+coverImage: 'image.x40801.png'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+Sau gần 2 tuần nghiên cứu mò mẫm về server mail, mình đã cài đặt thành công 1 con server mail bằng iRedMail kết hợp Mailgun để gửi/nhận mail và một số công nghệ của AWS để lưu trữ incoming email.
+
+Bài viết mang tính chất chia sẽ và lưu trữ kiến thức
+
+## Table of contents:
+
+1. Yêu cầu bài toán - Flowchart
+2. Các công nghệ sử dụng
+   1. [iRedMail](https://thnkandgrow.com/blog/2021/04/04/tut-phan-1-giio-thieu-va-huong-dan-cai-dat-server-mail-voi-iredmail/)
+   2. [MailGun - Một nhà cung cấp SMTP miễn phí](https://thnkandgrow.com/blog/2021/04/04/tut-phan-2-gioi-thieu-mailgun-mot-nha-cung-cap-dich-vu-smtp-mien-phi/\(opens in a new tab\))
+   3. [AWS Route53 và config DNS](https://thnkandgrow.com/?p=66)
+   4. [AWS Lambda - Serverless framework](https://thnkandgrow.com/blog/2021/04/04/tut-phan-4-aws-lambda-serverless-framework/\(opens in a new tab\))
+   5. [AWS S3 - SQS - SNS và cách config để hoạt động với lambda](https://thnkandgrow.com/blog/2021/04/04/tut-phan-5-gioi-thieu-aws-sqs-aws-sns-aws-s3-va-nhiem-vu/\(opens in a new tab\))
+3. Implemented code
+
+# Yêu cầu bài toán:
+
+Khách hàng muốn có 1 con server mail riêng để gửi và nhận email và đề xuất dùng iRedMail. Sau một số discuss thì khách hàng quyết định kết hợp với mailgun để tránh virus/spam.
+
+```
+The dream goal would be for us to send and receive email through mailgun and we would use mailgun for virus / spam detection.
+```
+
+Các bạn có thể xem thêm flowchart để dễ hiểu requirement
+
+<figure>
+
+![Flowchart ](/static/blog/images/image.png)
+
+<figcaption>
+
+Flowchart
+
+</figcaption>
+
+</figure>
+
+Giải thích sơ bộ flowchart 1 chút nhé.
+
+**Step1: Người gửi mail(sender) sẽ gửi mail đến địa chỉ** `**recipient@abc.com**`
+
+**Step 2: Email sẽ đến Mailgun và được mailgun xử lý**
+
+- Store email
+- Gửi thông báo đến 1 API endpoint(mình tạm đặt tên là `**processNotifyFromMailGun**` - step 3) có nhiệm vụ hứng notify từ Mailgun và tiếp tục xử lý
+
+**Step 3: Xử lý nhận được notify từ Mailgun**
+
+- Tính toán attachment size, nếu lớn hơn **25Mb** thì gửi mail reject cho sender
+- Nếu pass được, tạo 1 SQS queue với các thông tin cần thiết như **`**message-url**, **from, to**, **subject**`, ...**
+
+Mục đích của **Step 3** là đảm bảo email không quá lớn và lợi dụng cơ chế retry của SQS để gửi lại nếu bị fail gì đó ở step này.
+
+**Step 4: Xử** **lý message từ SQS và lưu nội dung email vào AWS S3 bucket**
+Mình tạm đặt tên lambda này là **processNotifySQSAndSaveEmailToS3.** Nhiệm vụ chính của lambda này là xử lý message từ SQS ở step 3, download `**raw email**` từ mailgun về và upload lên AWS S3. (Tại sao lại là raw email mình sẽ giải thích ở step sau)
+
+**Step 5: Các xử lý ở AWS S3 bucket**
+
+- Gửi message đến SQS ở **Step 6** khi 1 object được tạo trong bucket
+- Xoá object sau 14 ngày
+
+**Step 6: SQS nhận notify từ AWS S3 bucket(Step 5)**
+Ở step này, SQS sẽ nhận **Event Notification** từ AWS S3 bucket và trigger lambda gửi mail ở step sau.
+
+**Step 7: Gửi mail cho recipient**
+Ở bước này, lambda **processAndSendEmail** sẽ được gọi, mục đích chính của lambda này là nhận message từ SQS (Step 6) và gửi mail cho **`recipient`** bằng cách sử dụng tài khoản SMTP. Ở step này email sẽ bị reject `**recipient**` sẽ không nhận được email (vì mình đang mạo danh sender)
+
+Để giải quyết được vấn đề này Mailserver cần cho phép nhận những email mạo danh được gửi từ 1 tài khoản SMTP, ở đây mình dùng SMTP account: sender@domain.com
+
+## **Các công nghệ sử dụng**
+
+Các công nghệ được chọn vì những lý do sau:
+
+- **Mailgun**: Mailgun có cơ chế chống spam/virus, retry khi lỗi, khả năng filter email và bộ API rất hữu dụng
+- **AWS SQS:** Sử dụng đơn giản, cơ chế nhận message linh hoạt, retry, có thể integrate với các dịch vụ khác của AWS 1 cách dễ dàng, khả năng mở rộng tốt- điển hình là lambda và AWS S3.
+- **AWS S3**: Có thể lưu được file nặng, có các event notification, lifecycle và các tính năng hữu ích khác. Khả năng mở rộng tốt.
+- **AWS Lambda**: Có khả năng mở rộng rất tốt, không sợ bị chết hoặc "đơ" do có quá nhiều request cùng lúc.
+
+## Tạm kết:
+
+Với một coder tay mơ như mình, đây là một requirement khá phức tạp, liên quan đến khá nhiều công nghệ và config.
+
+Bài tiếp theo: [Phần 1 - Giới thiệu và hướng dẫn cài đặt server mail với iRedmail-Pro](https://thnkandgrow.com/blog/2021/04/04/tut-phan-1-giio-thieu-va-huong-dan-cai-dat-server-mail-voi-iredmail/)

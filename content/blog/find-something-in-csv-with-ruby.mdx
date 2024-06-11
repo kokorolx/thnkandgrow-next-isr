@@ -1,0 +1,103 @@
+---
+title: 'Tìm số lần xuất hiện của user_name trong file CSV 13M line'
+date: '2022-04-20'
+categories:
+  - 'technology'
+tags:
+  - 'csv'
+  - 'ruby'
+author: 'Hoang-Tam Lee'
+draft: false
+---
+
+Đề bài toán:
+Tìm số lần xuất hiện của `user_name` trong file CSV
+File CSV có khoản hơn 13 triệu dòng dữ liệu (nặng khoảng 500Mb)
+
+```
+# CSV file
+
+"user_name","suspect_flag"
+aadilab,suspect_conversations_flag
+aadilab,suspect_searches_flag
+```
+
+Mình có benchmark 1 số cách:
+
+```
+require 'benchmark'
+def ben_csv
+  @csv = CSV.read("db/suspect_workers_flag_super_fake.csv")
+  Benchmark.bmbm do |x|
+    x.report("select array:") {
+      p @csv.select {|x, y| x == "zylafl"}.count
+    }
+  end
+end
+
+def ben_file
+  @csv_str = File.read("db/suspect_workers_flag_super_fake.csv")
+  Benchmark.bmbm do |x|
+    x.report("string regex:") {
+      p @csv_str.scan(/zylafl\,/).count
+    }
+  end
+end
+
+def ben_shellscript
+  Benchmark.bmbm do |x|
+    x.report("shel script:") {
+      p `grep -o 'zylafl,' db/suspect_workers_flag_super_fake.csv | wc -l`
+    }
+  end
+end
+```
+
+Result:
+
+```
+Rehearsal -------------------------------------------------
+string regex: 3
+  0.273001   0.001638   0.274639 (  0.275356)
+---------------------------------------- total: 0.274639sec
+
+Rehearsal ------------------------------------------------
+shel script: "       3\n"
+  3.452150   0.595941  13.451730 (  9.518582)
+-------------------------------------- total: 13.451730sec
+
+Rehearsal -------------------------------------------------
+select array: 3
+  4.287471   0.338820   4.626291 (  4.680256)
+---------------------------------------- total: 4.626291sec
+```
+
+Như vậy, nếu đọc file CSV như 1 chuỗi và dùng regex thì tốc độ nhanh nhất.
+Một số riskies:
+
+- Có nhiều request và hệ thống sẽ load file CSV lên để đọc, do chưa có cơ chế cache nên sẽ tốn khá nhiều tài nguyên
+- Tốc độ sẽ bị giảm xuống, RAM, CPU sẽ được dùng nhiều hơn nếu có nhiều dữ liệu hơn và có thể dẫn đến `Not responding` trên server
+
+Another solution from HaVS:
+Tạo file CSV mới, trong file mới này sẽ tổng kết lại số lần xuất hiện của user_name.
+
+```
+# CSV file
+
+"user_name", "count"
+abc,3
+abd,2
+abf,2
+```
+
+Khi cần mình sẽ gọi file mới để lấy value ra.
+
+Cần tạo worker để update file mới vào mỗi tối hoặc 1 khung thời gian nào đó
+
+Trigger callback khi record được insert vào db (có thể sẽ khó nếu dùng data từ database khác)
+
+Risk:
+
+- Data có thể không được up-to-date
+
+Bạn còn cách nào khác hay hơn không?
