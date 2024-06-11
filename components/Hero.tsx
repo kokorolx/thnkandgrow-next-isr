@@ -32,6 +32,7 @@ export default function Hero(): ReactElement {
               <h1 className="text-5xl font-semibold sm:text-7xl md:text-8xl xl:text-9xl">
                 <ReactTyped
                   strings={[
+                    'Th<span style="color:#DE1D8D;">?</span>nkAndGrow',
                     'Th<span style="color:#DE1D8D;">i</span>nkAndGrow',
                     'Th<span style="color:#DE1D8D;">a</span>nkAndGrow',
                   ]}
