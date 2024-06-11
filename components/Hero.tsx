@@ -6,6 +6,7 @@ import { ReactElement, useContext, useEffect, useRef } from 'react';
 import { HiOutlineArrowNarrowDown } from 'react-icons/hi';
 import { ScrollContext } from './Providers/ScrollProvider';
 import { renderCanvas } from './renderCanvas';
+import { ReactTyped } from 'react-typed';
 
 export default function Hero(): ReactElement {
   const ref = useRef<HTMLHeadingElement>(null);
@@ -29,7 +30,15 @@ export default function Hero(): ReactElement {
           <div className="-mt-36">
             <div ref={ref} className="flex cursor-default flex-col space-y-2">
               <h1 className="text-5xl font-semibold sm:text-7xl md:text-8xl xl:text-9xl">
-                ThnkAndGrow
+                <ReactTyped
+                  strings={[
+                    'Th<span style="color:#DE1D8D;">i</span>nkAndGrow',
+                    'Th<span style="color:#DE1D8D;">a</span>nkAndGrow',
+                  ]}
+                  typeSpeed={150}
+                  backSpeed={50}
+                  loop
+                />
               </h1>
               <h2 className="text-3xl font-medium opacity-80 sm:text-6xl md:text-6xl xl:text-7xl text-right">
                 Think Critically, Innovate & Be Thankful
