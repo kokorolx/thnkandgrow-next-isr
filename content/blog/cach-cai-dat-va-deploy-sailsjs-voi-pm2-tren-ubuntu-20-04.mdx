@@ -14,7 +14,14 @@ author: 'Hoang-Tam Lee'
 draft: false
 ---
 
-Mình có 1 trang web được viết bằng [SailsJS](https://sailsjs.com/), MongoDB và mình muốn deploy lên server một cách đơn giản nhất, chỉ cần gõ lệnh deploy thì sẽ có 1 tool nào đó giúp mình những việc như lên server pull code mới nhất về, cài đặt những package mới, restart server, v.v. Mình có tìm hiểu một vài cách deploy NodeJS trước đó thì mình thích dùng [PM2](https://pm2.keymetrics.io/) vì tính đơn giản và dễ dùng của nó. Ở bài viết này mình xin chia sẽ cách mình đã deploy lên EC2
+# Overview
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+Mình có 1 trang web được viết bằng [SailsJS](https://sailsjs.com/), MongoDB và mình muốn deploy lên server
+một cách đơn giản nhất, chỉ cần gõ lệnh deploy thì sẽ có 1 tool nào đó giúp mình những việc như lên server
+pull code mới nhất về, cài đặt những package mới, restart server, v.v. Mình có tìm hiểu một vài cách
+deploy NodeJS trước đó thì mình thích dùng [PM2](https://pm2.keymetrics.io/) vì tính đơn giản và dễ dùng
+của nó. Ở bài viết này mình xin chia sẽ cách mình đã deploy lên EC2
 
 1. Setup EC2 instance
 2. Setup NodeJS environment
