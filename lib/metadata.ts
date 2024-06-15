@@ -34,7 +34,7 @@ const siteMetadata: SiteMetaData = {
   siteRepo: "https://github.com/thedevdavid/digital-garden",
   newsletterProvider: "mailerlite",
   newsletterUrl: "https://developreneur.davidlevai.com",
-  analyticsProvider: "umami",
+  analyticsProvider: "google",
   defaultTheme: "system",
   activeAnnouncement: true,
   announcement: {
