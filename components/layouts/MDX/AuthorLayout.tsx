@@ -8,16 +8,20 @@ interface Props {
 }
 
 export default function AuthorLayout({ children, content }: Props) {
-  const { avatar, occupation, company } = content;
+  const { avatar, occupation, company, name } = content;
 
   return (
     <div className="pt-8 author-container">
       <div className="mb-8 flex flex-col-reverse items-center justify-between sm:flex-row sm:items-center">
         <div className="text-center sm:text-left">
-          <h1 className="text-xl font-bold md:text-3xl lg:text-4xl">Hoang-Tam Lee</h1>
+          <h1 className="text-xl font-bold md:text-3xl lg:text-4xl">{name}</h1>
           <h2 className="text-sm font-normal md:text-base">
             {occupation} <span className="font-semibold">{company}</span>
           </h2>
+          <p>
+            Cloud Engineer - Software architect - Full Stack Developer, and Tech Enthusiast. I love
+            to learn and share.
+          </p>
         </div>
         <div>
           <Image
@@ -29,7 +33,7 @@ export default function AuthorLayout({ children, content }: Props) {
           />
         </div>
       </div>
-      <div className="prose max-w-none pb-8 text-justify text-sm dark:prose-dark md:text-lg xl:col-span-2">
+      <div className="prose max-w-none pb-8 text-sm dark:prose-dark md:text-lg xl:col-span-2">
         {children}
       </div>
     </div>

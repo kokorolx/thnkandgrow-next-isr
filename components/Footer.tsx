@@ -42,6 +42,138 @@ export default function Footer() {
           </div>
         </div>
       </footer>
+      <footer>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div>
+            <h4 className="text-lg font-semibold mb-2">Contact</h4>
+            <ul>
+              <li>
+                Email:{' '}
+                <a
+                  href="mailto:hello@thnkandgrow.com"
+                  className="text-blue-400 hover:text-blue-600"
+                >
+                  hello@thnkandgrow.com
+                </a>
+              </li>
+              <li>Address: Ho Chi Minh - Vietnam</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold mb-2">Quick Links</h4>
+            <ul>
+              <li>
+                <a href="https://thnkandgrow.com" className="hover:underline">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="https://thnkandgrow.com/about" className="hover:underline">
+                  About
+                </a>
+              </li>
+              <li>
+                <a href="https://thnkandgrow.com/services" className="hover:underline">
+                  Services
+                </a>
+              </li>
+              <li>
+                <a href="https://thnkandgrow.com/projects" className="hover:underline">
+                  Projects
+                </a>
+              </li>
+              <li>
+                <a href="https://blog.thnkandgrow.com/" className="hover:underline">
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a href="https://www.example.com/contact" className="hover:underline">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold mb-2">Services</h4>
+            <ul>
+              <li>
+                <a
+                  href="https://blog.thnkandgrow.com/blog/category/technology/"
+                  className="hover:underline"
+                >
+                  Full-Stack Development
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://blog.thnkandgrow.com/blog/category/aws/"
+                  className="hover:underline"
+                >
+                  AWS Solutions
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://blog.thnkandgrow.com/blog/category/technology/ruby-on-rails/"
+                  className="hover:underline"
+                >
+                  Ruby on Rails
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://blog.thnkandgrow.com/blog/category/technology/"
+                  className="hover:underline"
+                >
+                  Node.js
+                </a>
+              </li>
+              <li>
+                <a href="https://blog.thnkandgrow.com/blog/tag/docker/" className="hover:underline">
+                  Docker Orchestration
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://blog.thnkandgrow.com/blog/category/technology/database/"
+                  className="hover:underline"
+                >
+                  Database Management
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold mb-2">Follow Us</h4>
+            <ul>
+              <li>
+                <a href="https://www.facebook.com/kokorolx" className="hover:underline">
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/hoangtamle" className="hover:underline">
+                  LinkedIn
+                </a>
+              </li>
+              <li>
+                <a href="https://www.github.com/kokorolx" className="hover:underline">
+                  GitHub
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div className="md:col-span-2 lg:col-span-4">
+            <h4 className="text-lg font-semibold mb-2">About Us</h4>
+            <p>
+              Lê Hoàng Tâm with 7+ years of experience in delivering high-quality web applications,
+              our team specializes in Full-Stack Development, AWS Solutions, and DevOps practices.
+              We are committed to innovation and continuous improvement.
+            </p>
+          </div>
+        </div>
+      </footer>
     </SectionContainer>
   );
 }
