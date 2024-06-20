@@ -15,6 +15,21 @@ export default function Projects() {
   const [modal, setModal] = useState<ProjectModal>({ active: false, index: 0 });
 
   return (
+    <div className="flex flex-col items-center justify-center">
+      <div className="p-8 rounded-lg shadow-lg text-center">
+        <span role="img" aria-label="roadwork sign" className="text-3xl">
+          🚧
+        </span>
+        <h1 className="text-3xl font-bold mb-4 text-white">Page Under Construction</h1>
+        <p className="text-gray-700">
+          We are currently working on this page to bring you valuable content.
+        </p>
+        <p className="text-gray-700">Please check back soon for updates.</p>
+      </div>
+    </div>
+  );
+
+  return (
     <>
       {projects.map((project, index) => (
         <motion.div
