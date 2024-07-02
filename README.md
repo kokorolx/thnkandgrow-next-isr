@@ -3,13 +3,13 @@
 ![GardenPromo](/screenshots/garden-promo.jpg)
 [More screenshots here](/screenshots/)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fthedevdavid%2Fdigital-garden%2F)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkokorolx%2Fdigital-garden%2F)
 
 An open source blogging (digital gardening) template for developers using [Next.js](https://nextjs.org/) app router, MDX, [Contentlayer](https://contentlayer.dev/), [Tailwind CSS](https://tailwindcss.com/), [@shadcn/ui](https://ui.shadcn.com/) , [Lucide Icons](https://lucide.dev/icons), and more.
 
 If you love this template and/or use it, please give it a star on GitHub. This will help more people discover it, thus help improving the template.
 
-![GitHub Repo stars](https://img.shields.io/github/stars/thedevdavid/digital-garden?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/kokorolx/digital-garden?style=social)
 
 **Note: This project is always evolving and it's far from being perfect or even done.** I'm always open to suggestions and contributions. Feel free to open an issue or a PR if you have any ideas or suggestions. You can also see the [roadmap](#features--roadmap) for planned features if you want to contribute.
 
@@ -57,7 +57,7 @@ So I decided to build a solution that I would use myself. This is the result.
 
 ## Getting Started
 
-If you want to see how I set up this template for my own digital garden, you can check out [this commit](https://github.com/thedevdavid/website-2023/commit/fb10942d424a1389f9c4c1605849e45ff718656d) with all the changes.
+If you want to see how I set up this template for my own digital garden, you can check out [this commit](https://github.com/kokorolx/website-2023/commit/fb10942d424a1389f9c4c1605849e45ff718656d) with all the changes.
 
 1. Use the repo as a template
 2. Install dependencies with `pnpm install`
@@ -209,7 +209,6 @@ Note: DO NOT overdo it. You can easily make images look bad with lossy compressi
 - [Steven Selolo's Blog](https://stevenselolo.com/) - [Source](https://github.com/StevenPss/website-2023)
 - [Marton's Blog](https://www.martondobos.com/) - [Source](https://github.com/dobosmarton/digital-garden)
 
-
 **Create a PR and add your blog to this list if you're using the template!**
 
 ## Features & Roadmap
@@ -293,7 +292,7 @@ Note: DO NOT overdo it. You can easily make images look bad with lossy compressi
 
 ### Contributors
 
-- [@thedevdavid](https://twitter.com/thedevdavid)
+- [@kokorolx](https://twitter.com/kokorolx)
 - [@br4adam](https://github.com/br4adam)
 
 This project is from developers for developers. All contributions are welcome! Please feel free to:
@@ -311,7 +310,7 @@ This project is from developers for developers. All contributions are welcome! P
 4. Make sure your code lints and the app builds.
 5. Open pull request to `develop` branch.
 
-Any contributions you make will be under the MIT Software License. In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Code of Conduct can be found [here](https://gist.github.com/thedevdavid/08e306cee9dc1b6b7f3c209827277a82).
+Any contributions you make will be under the MIT Software License. In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Code of Conduct can be found [here](https://gist.github.com/kokorolx/08e306cee9dc1b6b7f3c209827277a82).
 
 ## Inspiration & Mentions
 

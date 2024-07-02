@@ -2,10 +2,10 @@
   "name": "digital-garden",
   "version": "0.7.2",
   "private": true,
-  "repository": "https://github.com/thedevdavid/digital-garden",
+  "repository": "https://github.com/kokorolx/digital-garden",
   "author": {
     "name": "David Levai",
-    "url": "https://twitter.com/thedevdavid"
+    "url": "https://twitter.com/kokorolx"
   },
   "scripts": {
     "dev": "next dev",

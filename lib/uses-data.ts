@@ -55,12 +55,12 @@ export const software = [
   {
     title: "VSCode",
     description: `Click here to find my plugins & config`,
-    href: "https://gist.github.com/thedevdavid/c1b69f72a7deb472506ee3cf5f559f81",
+    href: "https://gist.github.com/kokorolx/c1b69f72a7deb472506ee3cf5f559f81",
   },
   {
     title: "iTerm2 & Oh My Zsh",
     description: `Click here to find my plugins & config`,
-    href: "https://gist.github.com/thedevdavid/af307fb45d525ffebf38750970f98ed2",
+    href: "https://gist.github.com/kokorolx/af307fb45d525ffebf38750970f98ed2",
   },
   {
     title: "ActiveCampaign (*)",
