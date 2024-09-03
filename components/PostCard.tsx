@@ -14,7 +14,7 @@ export interface PostCardProps {
 export default function PostCard({ posts, showTags = true }: PostCardProps) {
   return (
     <ul>
-      {posts.map(({ slug, title, tags, summary }, index) => (
+      {posts.map(({ slug, link, title, tags, summary }, index) => (
         <motion.li
           key={slug}
           className="py-2"
@@ -22,11 +22,11 @@ export default function PostCard({ posts, showTags = true }: PostCardProps) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6, delay: index / 10 }}
         >
-          <Link href={`/blog/${slug}`} aria-label={`Read "${title}"`} legacyBehavior>
+          <Link href={link || `/blog/${slug}`} aria-label={`Read "${title}"`} legacyBehavior>
             <article className="cursor-pointer gap-3 space-y-2 bg-opacity-20 py-5 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
               <div className="space-y-3 xl:col-span-4">
                 <span className="text-2xl font-bold leading-8 tracking-tight">
-                  <Link href={`/blog/${slug}`}>
+                  <Link href={link || `/blog/${slug}`}>
                     <span className="text-primary-500 duration-300 hover:text-primary-400">
                       {title}
                     </span>

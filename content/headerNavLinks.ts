@@ -1,5 +1,5 @@
 const headerNavLinks = [
-  { href: 'https://blogs.thnkandgrow.com', title: 'My Blog' },
+  { href: 'https://blog.thnkandgrow.com', title: 'Blogs' },
   { href: '/projects', title: 'Projects' },
   // { href: '/books', title: 'Books' },
   // { href: '#!', title: 'My Sharing' },

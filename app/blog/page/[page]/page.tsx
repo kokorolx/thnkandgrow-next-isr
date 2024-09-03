@@ -25,7 +25,7 @@ export default function BlogPage({ params }: { params: { page: string } }) {
   };
 
   if (pageNumber > totalPages) {
-    redirect('/blog');
+    redirect('https://blog.thnkandgrow.com');
   }
 
   return (
