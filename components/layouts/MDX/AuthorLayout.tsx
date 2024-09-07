@@ -19,8 +19,8 @@ export default function AuthorLayout({ children, content }: Props) {
             {occupation} <span className="font-semibold">{company}</span>
           </h2>
           <p>
-            Cloud Engineer - Software architect - Full Stack Developer, and Tech Enthusiast. I love
-            to learn and share.
+            Full Stack Ruby on Rails/Nodejs Engineer | AWS Certified and Tech Enthusiast. I love to
+            learn and share.
           </p>
         </div>
         <div>
