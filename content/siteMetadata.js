@@ -1,7 +1,7 @@
 const siteMetadata = {
-  title: 'Hoang-Tam Lee',
-  author: 'Hoang-Tam Lee',
-  headerTitle: 'Hoang-Tam Lee',
+  title: 'Le Hoang Tam',
+  author: 'Le Hoang Tam',
+  headerTitle: 'Le Hoang Tam',
   description: 'Software Developer at NUS',
   language: 'en-us',
   theme: 'dark', // system, dark or light
@@ -10,7 +10,7 @@ const siteMetadata = {
   siteLogo: '/static/images/logo.png',
   image: '/static/images/kokorolx.webp',
   socialBanner: '/static/images/twitter-card.png',
-  email: 'kokoro.lehoang@gmail.com@gmail.com',
+  email: 'kokoro.lehoang+contact@gmail.com',
   github: 'https://github.com/kokorolx',
   linkedin: 'https://www.linkedin.com/in/lehoangtam95/',
   locale: 'en-US',

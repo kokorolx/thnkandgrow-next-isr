@@ -75,4 +75,4 @@ Prevoius v1 version:
 
 ## Licence
 
-[MIT](https://github.com/dlarroder/dalelarroder/blob/master/LICENSE) © [Hoang-Tam Lee](https://www.thnkandgrow.com)
+[MIT](https://github.com/dlarroder/dalelarroder/blob/master/LICENSE) © [Le Hoang Tam](https://www.thnkandgrow.com)

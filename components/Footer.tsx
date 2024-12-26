@@ -88,7 +88,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://www.example.com/contact" className="hover:underline">
+                <a href="mail:hello@thnkandgrow.com" className="hover:underline">
                   Contact
                 </a>
               </li>
@@ -145,11 +145,11 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-lg font-semibold mb-2">Follow Us</h4>
+            <h4 className="text-lg font-semibold mb-2">Follow Me</h4>
             <ul>
               <li>
-                <a href="https://www.facebook.com/kokorolx" className="hover:underline">
-                  Facebook
+                <a href="https://dly.to/y55fNZ3b21J" className="hover:underline">
+                  Daily.dev
                 </a>
               </li>
               <li>
@@ -164,9 +164,9 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-          <div className="md:col-span-2 lg:col-span-4">
-            <h4 className="text-lg font-semibold mb-2">About Us</h4>
-            <p>
+          <div className="md:col-span-2 lg:col-span-4 mt-4">
+            <h4 className="hidden text-lg font-semibold mb-2">About Us</h4>
+            <p className="hidden">
               Lê Hoàng Tâm with 7+ years of experience in delivering high-quality web applications,
               our team specializes in Full-Stack Development, AWS Solutions, and DevOps practices.
               We are committed to innovation and continuous improvement.

@@ -4,8 +4,8 @@ import MainLayout from '@/layouts/MainLayout';
 import { allAuthors } from 'contentlayer/generated';
 
 export const metadata = {
-  title: 'Uses - Hoang-Tam Lee',
-  description: 'What I Use - Hoang-Tam Lee',
+  title: 'Uses - Le Hoang Tam',
+  description: 'What I Use - Le Hoang Tam',
 };
 
 export default function Uses() {

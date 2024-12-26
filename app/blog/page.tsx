@@ -5,8 +5,8 @@ import { POSTS_PER_PAGE } from '@/types/default';
 import { allBlogs } from 'contentlayer/generated';
 
 export const metadata = {
-  title: 'Blog - Hoang-Tam Lee',
-  description: 'My Blogs - Hoang-Tam Lee',
+  title: 'Blog - Le Hoang Tam',
+  description: 'My Blogs - Le Hoang Tam',
 };
 
 export default function Blog() {

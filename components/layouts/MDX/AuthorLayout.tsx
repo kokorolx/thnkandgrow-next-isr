@@ -19,13 +19,13 @@ export default function AuthorLayout({ children, content }: Props) {
             {occupation} <span className="font-semibold">{company}</span>
           </h2>
           <p>
-            Full Stack Ruby on Rails/Nodejs Engineer | AWS Certified and Tech Enthusiast. I love to
-            learn and share.
+            Full Stack Ruby on Rails/Node.js Engineer | AWS Certified | Tech Enthusiast who loves
+            learning and sharing
           </p>
         </div>
         <div>
           <Image
-            alt="Hoang-Tam Lee"
+            alt="Hoang Tam Lee"
             height={130}
             width={130}
             src={avatar || ''}

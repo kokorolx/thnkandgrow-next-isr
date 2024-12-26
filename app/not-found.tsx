@@ -4,8 +4,8 @@ import SectionContainer from '@/components/SectionContainer';
 // TODO: Comment out when https://github.com/vercel/next.js/issues/50566 is fixed.
 
 // export const metadata = {
-//   title: '404 - Hoang-Tam Lee',
-//   description: 'Not Found - Hoang-Tam Lee',
+//   title: '404 - Le Hoang Tam',
+//   description: 'Not Found - Le Hoang Tam',
 // };
 
 export default function FourZeroFour() {
