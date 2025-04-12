@@ -5,6 +5,7 @@ const headerNavLinks = [
   // { href: '#!', title: 'My Sharing' },
   { href: '/uses', title: 'Uses' },
   { href: '/about', title: 'About' },
+  { href: 'https://chat.thnkandgrow.com', title: 'Chat' },
 ];
 
 export default headerNavLinks;
